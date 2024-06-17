@@ -6,6 +6,9 @@ function make2DArray(cols, rows) {
     let arr = new Array(cols);
     for(let i = 0; i<arr.length; i++){
         arr[i] = new Array(rows);
+        for(let j = 0; j < arr[i].length; j++) {
+            arr[i][j] = 0
+        }
     }
 
     return arr;
@@ -17,7 +20,7 @@ let cols, rows;
 
 function setup(p) {
     p.createCanvas(400, 400);
-    p.background(0)
+    p.background(255)
     cols = p.width / w;
     rows = p.height / w;
     grid = make2DArray(cols, rows);
@@ -27,31 +30,54 @@ function setup(p) {
             grid[i][j] = 0;
         }
     }
+
+    grid[20][10] = 1
 }
 
-function draw(p) {
-    p.background(0);
 
-    // grid[10][20]
+
+function draw(p) {
+    p.background(0, 0, 0, 10);
 
     for(let i = 0; i < cols; i++) {
         for(let j = 0; j < rows; j++) {
-            p.stroke(255);
-            p.fill(grid[i][j]*255);
             let x = i * w;
             let y = j * w;
             p.square(x, y, w);
+            p.stroke(255);
+            p.fill(grid[i][j]*255); // grid[i][j] returns 1 or 0 so it will be 255 or 0, white or black
+            
         }
+    }
+
+    let nextGrid = make2DArray(cols, rows); // create copy of grid to make edits to for next frame of animation
+  
+    for(let i = 0; i < cols; i++) {
+        for(let j = 0; j < rows; j++) {
+            let currentCell = grid[i][j];
+            if(currentCell === 1) {
+              let cellBelow = grid[i][j + 1];
+              if(cellBelow === 0 && j < rows - 2) {
+                  nextGrid[i][j + 1] = 1;
+              }else {
+                  nextGrid[i][j] = 1;
+                }
+            }
+        }
+    }
+
+    grid = nextGrid;
+
+    p.mousePressed = () => {
+      let col = Math.floor(p.mouseX / w);
+      let row = Math.floor(p.mouseY / w);
+
+      grid[col][row] = 1;
     }
 }
 
 function sketch(p) {
-//     p.setup = function() {
-//       p.createCanvas(400, 400);
-//       p.background(0);
-//       p.circle(200, 200, 400);
-//   }
-
+    
     p.setup = function() {
         setup(p);
     }
