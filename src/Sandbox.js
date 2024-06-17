@@ -55,9 +55,9 @@ function draw(p) {
     for(let i = 0; i < cols; i++) {
         for(let j = 0; j < rows; j++) {
             let currentCell = grid[i][j];
-            if(currentCell === 1) {
+            if(currentCell === 1) { //not sure what's goin on here it cellBelow SHOULD resolve to either 1, 0, or undefined and set the bottom layer to 1 as is....
               let cellBelow = grid[i][j + 1];
-              if(cellBelow === 0 && j < rows - 2) {
+              if(cellBelow === 0) {
                   nextGrid[i][j + 1] = 1;
               }else {
                   nextGrid[i][j] = 1;
@@ -68,7 +68,7 @@ function draw(p) {
 
     grid = nextGrid;
 
-    p.mousePressed = () => {
+    p.mouseDragged = () => {
       let col = Math.floor(p.mouseX / w);
       let row = Math.floor(p.mouseY / w);
 
